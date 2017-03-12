@@ -18,4 +18,5 @@ public class CuPrinter {
         //pass the path of the file to parser to parse the folder and extract seperate files
 
     }
+    
 }
