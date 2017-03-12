@@ -16,6 +16,8 @@ public class ParseFiles {
    private ArrayList<CompilationUnit> cu_list;
     private String file_path;
     private String output_file;
+    String yumlCode;
+    ArrayList<CompilationUnit> cuArray;
 
 
 ParseFiles(String in_path,String out_path)
@@ -26,6 +28,14 @@ ParseFiles(String in_path,String out_path)
 }
 public void run()
 {
+    cuArray = getCuArray(file_path);
+        buildMap(cuArray);
+        for (CompilationUnit cu : cuArray)
+            yumlCode += parser(cu);
+        yumlCode += parseAdditions();
+        yumlCode = yumlCodeUniquer(yumlCode);
+        System.out.println("Unique Code: " + yumlCode);
+        GenerateDiagram.generatePNG(yumlCode, Output_file);
 
 }
 
