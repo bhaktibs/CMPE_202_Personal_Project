@@ -24,11 +24,12 @@ ParseFiles(String in_path,String out_path)
 {
     this.file_path=in_path;
     this.output_file=out_path;
+   get_cu_list(file_path);
 
 }
 public void run()
 {
-    cuArray = getCuArray(file_path);
+    cuArray = cu_list(file_path);
         buildMap(cuArray);
         for (CompilationUnit cu : cuArray)
             yumlCode += parser(cu);
@@ -38,6 +39,24 @@ public void run()
         GenerateDiagram.generatePNG(yumlCode, Output_file);
 
 }
+   public void cu_list(String file_path)
+   {
+      ArrayList<CompilationUnit> cu_list;
+    File input_file = new File(file_path);
+    ArrayList<CompilationUnit> cu_arr_list = new ArrayList<CompilationUnit>();
+    for (final File f : input_file.listFiles()) {
+        if (f.isFile() && f.getName().endsWith(".java")) {
+            FileInputStream in = new FileInputStream(f);
+            CompilationUnit cu;
+            try {
+                cu = JavaParser.parse(in);
+                cu_arr_list.add(cu);
+            } finally {
+                in.close();
+            }
+        }
+   }
+   }
 
 
 
