@@ -24,36 +24,38 @@ ParseFiles(String in_path,String out_path)
 {
     this.file_path=in_path;
     this.output_file=out_path;
-   get_cu_list(file_path);
+   run();
 
 }
-public void run()
+public ArrayList<CompilationUnit> get_cu_list() throws Exception
 {
-    cuArray = cu_list(file_path);
-        buildMap(cuArray);
-        for (CompilationUnit cu : cuArray)
-            yumlCode += parser(cu);
-        yumlCode += parseAdditions();
-        yumlCode = yumlCodeUniquer(yumlCode);
-        System.out.println("Unique Code: " + yumlCode);
-        GenerateDiagram.generatePNG(yumlCode, Output_file);
-
-}
-   public void cu_list(String file_path)
-   {
-      ArrayList<CompilationUnit> cu_list;
-    File input_file = new File(file_path);
+    File input_folder = new File(file_path);
+    File [] input_files = input_folder.listFiles();
     ArrayList<CompilationUnit> cu_arr_list = new ArrayList<CompilationUnit>();
-    for (final File f : input_file.listFiles()) {
-        if (f.isFile() && f.getName().endsWith(".java")) {
-            FileInputStream in = new FileInputStream(f);
-           CompilationUnit cu;
+    for (int i=0;i< input_files.length; i++) {
+        if (input_files[i].isFile() && input_files[i].getName().endsWith(".java")) {
+            FileInputStream in = new FileInputStream(input_files[i]);
+            try {
+                CompilationUnit cu;
                 cu = JavaParser.parse(in);
                 cu_arr_list.add(cu);
-
+            }
+            catch();
+               finally {
                 in.close();
+            }
+
+
         }
-   }
+    }
+    return cu_arr_list;
+
+}
+
+public void run();
+    ArrayList<CompilationUnit> cu_arr_lis = get_cu_list();
+
+}
    }
 
 
