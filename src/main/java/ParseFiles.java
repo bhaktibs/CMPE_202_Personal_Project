@@ -47,13 +47,11 @@ public void run()
     for (final File f : input_file.listFiles()) {
         if (f.isFile() && f.getName().endsWith(".java")) {
             FileInputStream in = new FileInputStream(f);
-            CompilationUnit cu;
-            try {
+           CompilationUnit cu;
                 cu = JavaParser.parse(in);
                 cu_arr_list.add(cu);
-            } finally {
+
                 in.close();
-            }
         }
    }
    }
