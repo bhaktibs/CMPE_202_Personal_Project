@@ -12,7 +12,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
@@ -29,12 +28,10 @@ public class ParseFiles {
     private String input_file_path;
     private String output_file;
 
-
     ParseFiles(String in_path, String out_path) {
         this.input_file_path = in_path;
         this.output_file = out_path;
     }
-
 
     public ArrayList<CompilationUnit> get_cu_list() throws Exception {
         File input_folder = new File(input_file_path);
@@ -50,7 +47,6 @@ public class ParseFiles {
                     cu_arr_list.add(cu);
                 } finally {
                     in.close();
-
                 }
             }
         }
@@ -72,14 +68,11 @@ public class ParseFiles {
                     if (e.contains(Modifier.PUBLIC)) {
                         //The class or interface is public
                         if (classDec.isInterface()) {
-                            Interface_type int_t = new Interface_type(classDec);
-                            //int_t.create_string();
+                            Interface_type int_t = new Interface_type(classDec);  
                         }
                         else
                         {
-                            //System.out.println("21");
                             Class_type class_t = new Class_type(classDec);
-                            //class_t.method_extractor();
                         }
                     }
                 }
@@ -89,8 +82,6 @@ public class ParseFiles {
         } finally {
 
         }
-
-
     }
 }
 
