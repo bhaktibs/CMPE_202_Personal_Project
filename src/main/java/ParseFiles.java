@@ -22,6 +22,8 @@ import java.util.EnumSet;
 /**
  * Created by bhaktishah on 2/25/17.
  */
+/*parseFiles has the constructor which does the intial work of parsing the files and creating compilation units for each java
+class. Once compilation units are created, each compilation unit is processed to extract information*/
 public class ParseFiles {
     ArrayList<CompilationUnit> cu_list;
     ArrayList<String> classes;
