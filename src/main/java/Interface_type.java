@@ -20,6 +20,7 @@
  */
 
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -35,30 +36,64 @@ public class Interface_type {
     private String final_string = "";
     private NodeList<ClassOrInterfaceType> parent;
     private NodeList<ClassOrInterfaceType> implemented_type;
+    private List<BodyDeclaration<?>> attributes;
     private List<MethodDeclaration> methods;
-    private List<String> method_ext;
+    private ArrayList<String> method_ext;
+    private ArrayList<String> member_variable;
 
 
-    public Interface_type(ClassOrInterfaceDeclaration c)
-    {
+
+    public Interface_type(ClassOrInterfaceDeclaration c) {
         name = c.getNameAsString();
         parent = c.getExtendedTypes();
         implemented_type = c.getImplementedTypes();
-        ArrayList<String> method_ext = new ArrayList<String>();
+        method_ext = new ArrayList<String>();
         methods = c.getMethods();
+        attributes=c.getMembers();
+        member_variable=new ArrayList<String >();
+        for(BodyDeclaration<?> a:attributes)
+        {
+            if(a instanceof MethodDeclaration)
+            {
+            }
+            else
+            {
+                member_variable.add(convert_to_att_form(a));
+            }
+        }
         for (MethodDeclaration m : methods) {
 
             Method_extractor m_e = new Method_extractor(m);
             method_ext.add(m_e.get_string());
         }
     }
-    public String create_final_string () {
-        for (ClassOrInterfaceType p:parent)
-        {
-            final_string += "class "+name;
-            final_string += "<|--"+p.getNameAsString()+"\n";
+    public String get_name()
+    {
+        return "interface "+name;
+    }
+    public String get_relations () {
+        String relations="";
+        for (ClassOrInterfaceType p : parent) {
+            relations +=  name;
+            relations += "<|--" + p.getNameAsString() + "\n";
         }
-        final_string +="class "+name+"{";
+        for (ClassOrInterfaceType i : implemented_type) {
+            relations +=   name;
+            relations += "<|--" + i.getNameAsString() + "\n";
+        }
+        return relations;
+    }
+    public String get_method_members()
+    {
+        final_string +="interface "+name+"{\n";
+
+        if(member_variable!=null)
+        {
+            for(int i=0;i<member_variable.size();i++)
+            {
+                final_string +=member_variable.get(i) + "\n";
+            }
+        }
 
         if(method_ext!=null) {
             for (int i = 0; i < method_ext.size(); i++) {
@@ -67,7 +102,39 @@ public class Interface_type {
             }
         }
         final_string+="}";
-        System.out.println(final_string);
+        //System.out.println(final_string);
         return final_string;
     }
+    public String convert_to_att_form(BodyDeclaration<?> a)
+    {
+        a.removeComment();
+        String attribute = a.toString();
+        attribute = attribute.replace(";","");
+
+        String final_att="";
+        if(attribute.contains("private "))
+        {
+            String result[] = attribute.split("\\s+");
+            final_att += "- ";
+            int index=result.toString().indexOf("private");
+            for(int i=index+1;i<result.length;i++)
+            {
+                final_att += result[i]+" ";
+            }
+
+        }
+        else if(attribute.contains("public"))
+        {
+            String result[] = attribute.split("\\s+");
+            final_att +="+ ";
+            int index=result.toString().indexOf("private");
+            for(int i=index+1;i<result.length;i++)
+            {
+                final_att += result[i];
+            }
+        }
+        return final_att;
+
+    }
+
 }
