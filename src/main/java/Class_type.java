@@ -42,4 +42,9 @@ public class Class_type {
     private ArrayList<String> member_variable;
 
     }
+public String get_name()
+{
+    return "class "+name;
+}
+
 
