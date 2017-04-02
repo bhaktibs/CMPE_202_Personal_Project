@@ -58,5 +58,28 @@ public String get_relations () {
         }
         return relations;
     }
+public String get_method_members()
+    {
+        final_string +="class "+name+"{\n";
+
+        if(member_variable!=null)
+        {
+            for(int i=0;i<member_variable.size();i++)
+            {
+                final_string +=member_variable.get(i) + "\n";
+            }
+        }
+
+        if(method_ext!=null) {
+            for (int i = 0; i < method_ext.size(); i++) {
+                final_string += method_ext.get(i) + "\n";
+
+            }
+        }
+        final_string+="}";
+        //System.out.println(final_string);
+        return final_string;
+    }
+
 
 
