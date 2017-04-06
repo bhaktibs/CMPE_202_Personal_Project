@@ -73,13 +73,47 @@ public String get_method_members()
         if(method_ext!=null) {
             for (int i = 0; i < method_ext.size(); i++) {
                 final_string += method_ext.get(i) + "\n";
-
             }
         }
         final_string+="}";
         //System.out.println(final_string);
         return final_string;
     }
+public String convert_to_att_form(BodyDeclaration<?> a)
+   {
+       a.removeComment();
+       String attribute = a.toString();
+       attribute = attribute.replace(";","");
+
+       String final_att="";
+       if(attribute.contains("private "))
+       {
+           String result[] = attribute.split("\\s+");
+           final_att += "- ";
+           int index=result.toString().indexOf("private");
+           for(int i=index+1;i<result.length;i++)
+           {
+               final_att += result[i]+" ";
+           }
+
+       }
+       else if(attribute.contains("public"))
+       {
+           String result[] = attribute.split("\\s+");
+           final_att +="+ ";
+           int index=result.toString().indexOf("private");
+           for(int i=index+1;i<result.length;i++)
+           {
+               final_att += result[i];
+           }
+       }
+      return final_att;
+
+   }
+
+
+    }
+
 
 
 
