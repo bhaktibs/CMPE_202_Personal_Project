@@ -21,7 +21,6 @@
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.MethodDeclaration;
-
 import java.util.EnumSet;
 import java.util.List;
 
