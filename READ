@@ -1,4 +1,8 @@
 # CMPE_202_Personal_Project
+Dependency:
+In order to create UML diagram, download graphviz software.
+Link:http://www.graphviz.org/Download.php
+
 Step1: Clone or download the repository.
 Step 2: Unzip the folder.
 Step 3: Open the java project in any of the supporting platform.
