@@ -71,15 +71,15 @@ public class Interface_type {
     {
         return "interface "+name;
     }
-    public String get_relations () {
-        String relations="";
+   public String get_relations() {
+        String relations = "";
         for (ClassOrInterfaceType p : parent) {
-            relations +=  name;
-            relations += "<|--" + p.getNameAsString() + "\n";
+            relations += p.getNameAsString();
+            relations += "<|--" + name + "\n";
         }
         for (ClassOrInterfaceType i : implemented_type) {
-            relations +=   name;
-            relations += "<|--" + i.getNameAsString() + "\n";
+            relations += i.getNameAsString();
+            relations += "<|.." + name + "\n";
         }
         return relations;
     }
