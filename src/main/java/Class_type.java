@@ -32,15 +32,33 @@ import java.util.List;
  * Created by bhaktishah on 3/23/17.
  */
 public class Class_type {
-    private  String name;
+    private String name;
     private String final_string = "";
     private NodeList<ClassOrInterfaceType> parent;
     private NodeList<ClassOrInterfaceType> implemented_type;
-    private List<BodyDeclaration<?>> attributes;
+    private List<FieldDeclaration> attributes;
     private List<MethodDeclaration> methods;
     private ArrayList<String> method_ext;
-    private ArrayList<String> member_variable;
+    private NodeList<BodyDeclaration<?>>  constructor;
+    private String cu_list_string;
 
+    public Class_type(ClassOrInterfaceDeclaration c,String cu_list) {
+        name = c.getNameAsString();
+        parent = c.getExtendedTypes();
+        implemented_type = c.getImplementedTypes();
+        method_ext = new ArrayList<String>();
+        methods = c.getMethods();
+        attributes = c.getFields();
+        constructor = c.getMembers();
+        cu_list_string=cu_list;
+
+        //method extractor converts method to final string form which can be used directly to create class
+        for (MethodDeclaration m : methods) {
+
+            Method_extractor m_e = new Method_extractor(m,cu_list_string);
+            method_ext.add(m_e.get_string());
+
+        }
     }
 public String get_name()
 {
