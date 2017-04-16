@@ -34,36 +34,27 @@ import java.util.List;
 public class Interface_type {
     private  String name;
     private String final_string = "";
-    private NodeList<ClassOrInterfaceType> parent;
-    private NodeList<ClassOrInterfaceType> implemented_type;
-    private List<BodyDeclaration<?>> attributes;
+//    private NodeList<ClassOrInterfaceType> parent;
+//    private NodeList<ClassOrInterfaceType> implemented_type;
+    private List<FieldDeclaration> attributes;
     private List<MethodDeclaration> methods;
     private ArrayList<String> method_ext;
     private ArrayList<String> member_variable;
+    private String cu_list_string;
 
 
-
-    public Interface_type(ClassOrInterfaceDeclaration c) {
+    public Interface_type(ClassOrInterfaceDeclaration c,String cu_list) {
         name = c.getNameAsString();
-        parent = c.getExtendedTypes();
-        implemented_type = c.getImplementedTypes();
+//        parent = c.getExtendedTypes();
+//        implemented_type = c.getImplementedTypes();
         method_ext = new ArrayList<String>();
         methods = c.getMethods();
-        attributes=c.getMembers();
+        attributes=c.getFields();
         member_variable=new ArrayList<String >();
-        for(BodyDeclaration<?> a:attributes)
-        {
-            if(a instanceof MethodDeclaration)
-            {
-            }
-            else
-            {
-                member_variable.add(convert_to_att_form(a));
-            }
-        }
+        cu_list_string=cu_list;
         for (MethodDeclaration m : methods) {
 
-            Method_extractor m_e = new Method_extractor(m);
+            Method_extractor m_e = new Method_extractor(m,cu_list_string);
             method_ext.add(m_e.get_string());
         }
     }
