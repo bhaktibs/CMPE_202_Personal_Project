@@ -163,7 +163,8 @@ public String get_constructor_string(BodyDeclaration b)
         //System.out.println("this is for class "+final_string);
         return final_string;
     }
-
+//The attributes obtained from the get_member_methods are in the form of FieldDeclaration Type. To convert attributes to string
+    //and get only public and private attributes, below method is used. Takes,FieldDeclaration type as a paramter.
     public String to_string_attribute(FieldDeclaration a) {
         String final_att = "";
        for(Modifier e:a.getModifiers())
