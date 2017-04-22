@@ -84,6 +84,9 @@ public String get_dependency_relations()
 
         return relations;
     }
+    //get_construcor_string is used to get member variables of type constructors for the given class. The method takes,
+    //BodyDeclaration as a parameter.
+    
 public String get_constructor_string(BodyDeclaration b)
 {
     String constructor_to_string="";
