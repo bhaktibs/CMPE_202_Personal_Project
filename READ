@@ -6,7 +6,7 @@ Dependency:
 Steps to generate UML diagram: 
 Step1: download the jar file.
 Step 2:Open the terminal.
-Step 3:Open terminal.
+Step 3:
 Step 4: enter java umlparser <source folder> <output file name>
 
 
