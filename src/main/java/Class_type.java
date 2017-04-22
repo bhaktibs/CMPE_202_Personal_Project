@@ -30,6 +30,7 @@ import java.util.List;
 /**
  * Created by bhaktishah on 3/23/17.
  */
+//This class is used to parse Compilation unit of Type Class.
 public class Class_type {
     private String name;
     private String final_string = "";
@@ -60,6 +61,7 @@ public class Class_type {
 
         }
     }
+    
 public String get_dependency_relations()
 {
     return this.depedency_relations;
