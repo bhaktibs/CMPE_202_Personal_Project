@@ -33,6 +33,14 @@ public class Dependency_Association {
     private ArrayList<String>class_list;
     private String relations;
 
-
+//constructor for dependecy
+    public Dependency_Association(ArrayList<TypeDeclaration> t_list)
+    {
+        this.t_list = t_list;
+        this.class_list = new ArrayList<String>();
+        this.map = new HashMap<String,String>();
+        this.relations ="";
+        get_names_as_string();
+    }
 
 }
