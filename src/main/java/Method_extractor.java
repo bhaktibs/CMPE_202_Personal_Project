@@ -21,6 +21,8 @@
 
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.MethodDeclaration;
+
+import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
@@ -29,33 +31,63 @@ import java.util.List;
  */
 public class Method_extractor {
     MethodDeclaration m;
-    String method_full;
-     List method_parm;
+    List method_parm;
+    String class_name;
 
 
-
-    public Method_extractor(MethodDeclaration met)
-    {
-        m=met;
-        method_full=m.getDeclarationAsString();
-        method_parm=met.getParameters();
+    public Method_extractor(MethodDeclaration method, String name) {
+        m = method;
+        method_parm = method.getParameters();
+        class_name = name;
 
     }
 
     public String get_string() {
 
-        String method_string="";
+
         EnumSet<Modifier> e = m.getModifiers();
+        String method_string = "";
         if (e.contains(Modifier.PUBLIC)) {
             method_string = "+ ";
             method_string += m.getNameAsString() + "(";
+
             for (Object t : method_parm) {
-                method_string += t.toString();
+                if(t.toString().isEmpty())
+                {
+
+                }
+                else
+                {
+                    String[] s_list = t.toString().split("\\s+");
+                    method_string+= s_list[1] + ":" + s_list[0];
+                }
             }
-            method_string += ")";
+            method_string += ") : ";
+            //System.out.println(method_string);
+            method_string += m.getType();
+
         }
+
         return method_string;
     }
 
+    public String dependecies(ArrayList<String> cu_list) {
+        String dependecy = "";
+
+        for (Object m : method_parm) {
+            if (m.toString().isEmpty()) {
+
+            } else {
+                String[] s_list = m.toString().split("\\s+");
+
+                if (cu_list.contains(s_list[0])) {
+                    dependecy += class_name + "..>" + s_list[0] + "\n";
+                }
+            }
+        }
+
+        return dependecy;
     }
+
+}
 

@@ -32,8 +32,7 @@ public class Dependency_Association {
     private ArrayList<TypeDeclaration> t_list;
     private ArrayList<String>class_list;
     private String relations;
-
-//constructor for dependecy
+    //constructor for dependecy
     public Dependency_Association(ArrayList<TypeDeclaration> t_list)
     {
         this.t_list = t_list;
@@ -42,5 +41,65 @@ public class Dependency_Association {
         this.relations ="";
         get_names_as_string();
     }
+
+    //convert the typedeclaration units to Array of String
+
+    public void get_names_as_string()
+    {
+
+        for(TypeDeclaration t:t_list)
+        {
+            class_list.add(t.getNameAsString());
+        }
+
+    }
+
+    public void get_dependency_relations()
+    {
+        for( TypeDeclaration t :t_list)
+        {
+            for(String s:class_list) {
+                if (t.getFields().toString().contains(s))
+
+                {
+                    if (map.containsValue(t.getNameAsString())) {
+                        String key = find_key(t.getNameAsString());
+                        if (key.equals(s)) {
+
+                        }
+
+                    } else {
+                        map.put(t.getNameAsString(), s);
+                    }
+                }
+            }
+        }
+
+    }
+    public String find_key(String s)
+    {
+        for(String o:map.keySet())
+        {
+            if(map.get(o).equals(s))
+            {
+                return o;
+            }
+        }
+        return "";
+    }
+
+
+    public String dependency_relations()
+    {
+        for(String k:map.keySet())
+        {
+            relations += k+"--"+ map.get(k)+"\n";
+
+        }
+
+        return relations;
+    }
+
+
 
 }

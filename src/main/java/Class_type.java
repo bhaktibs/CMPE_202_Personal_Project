@@ -30,7 +30,6 @@ import java.util.List;
 /**
  * Created by bhaktishah on 3/23/17.
  */
-//This class is used to parse Compilation unit of Type Class.
 public class Class_type {
     private String name;
     private String final_string = "";
@@ -41,8 +40,7 @@ public class Class_type {
     private ArrayList<String> method_ext;
     private NodeList<BodyDeclaration<?>>  constructor;
     private ArrayList<String> cu_list_string;
-    private String depedency_relations="";
-
+    private String dep_rel;
     public Class_type(ClassOrInterfaceDeclaration c,ArrayList<String> cu_list) {
         name = c.getNameAsString();
         parent = c.getExtendedTypes();
@@ -52,21 +50,23 @@ public class Class_type {
         attributes = c.getFields();
         constructor = c.getMembers();
         cu_list_string=cu_list;
-
+        dep_rel ="";
 
         //method extractor converts method to final string form which can be used directly to create class
         for (MethodDeclaration m : methods) {
-            Method_extractor m_e = new Method_extractor(m);
+            Method_extractor m_e = new Method_extractor(m,name);
+            String temp=m_e.dependecies(cu_list_string);
+            if(dep_rel.contains(temp))
+            {
+            }
+            else {
+                dep_rel += m_e.dependecies(cu_list_string) + "\n";
+            }
             method_ext.add(m_e.get_string());
 
         }
     }
-    
-public String get_dependency_relations()
-{
-    return this.depedency_relations;
-}
-    //returns relations to other class or interface
+
     public String get_name() {
         return "class " + name;
     }
@@ -81,12 +81,9 @@ public String get_dependency_relations()
             relations += i.getNameAsString();
             relations += "<|.." + name + "\n";
         }
-
+        //System.out.println("relaions" + relations);
         return relations;
     }
-    //get_construcor_string is used to get member variables of type constructors for the given class. The method takes,
-    //BodyDeclaration as a parameter.
-    
 public String get_constructor_string(BodyDeclaration b)
 {
     String constructor_to_string="";
@@ -95,20 +92,13 @@ public String get_constructor_string(BodyDeclaration b)
               if (b instanceof ConstructorDeclaration)
               {
                   constructor_to_string += "+ " + ((ConstructorDeclaration) b).getName().toString() +" (";
+
                   for (Parameter p:((ConstructorDeclaration) b).getParameters()
                        ) {
-                      for(int i=0;i<cu_list_string.size();i++)
-                      {
-                          if(p.getType().toString().contains(cu_list_string.get(i)))
-                          {
-                              depedency_relations += this.name + "..>" + cu_list_string.get(i) + "\n";
-                          }
-                      }
                       constructor_to_string += p.getNameAsString()+": "+ p.getType().toString();
                   }
                   constructor_to_string +=")";
               }
-    //System.out.println("this is constructor " + constructor_to_string);
               return constructor_to_string;
 
 }
@@ -117,22 +107,6 @@ public String get_constructor_string(BodyDeclaration b)
         final_string += "class " + name + "{\n";
         if(constructor!= null) {
             for (BodyDeclaration b : constructor) {
-                for(int i=0;i<cu_list_string.size();i++)
-                    if(b instanceof MethodDeclaration ) {
-                        if (((MethodDeclaration) b).getDeclarationAsString().contains(cu_list_string.get(i)))
-                        {
-                            if(depedency_relations.contains(this.name + "..>" + cu_list_string.get(i)))
-                            {
-
-                            }
-                            else {
-                                depedency_relations += this.name + "..>" + cu_list_string.get(i) + "\n";
-                            }
-//                    System.out.println(depedency_relations);
-// System.out.println(((MethodDeclaration) b).getDeclarationAsString() + "name " + this.name + "true" +
-// cu_list_string.get(i));
-                        }
-                    }
                 final_string +=get_constructor_string(b)+"\n";
             }
         }
@@ -142,29 +116,22 @@ public String get_constructor_string(BodyDeclaration b)
             for (int i = 0; i < attributes.size(); i++) {
 
                 final_string += to_string_attribute(attributes.get(i)) + "\n";
-                for(int j=0;j<cu_list_string.size();j++)
-                {
-                    if (attributes.get(i).getElementType().toString().contains(cu_list_string.get(j)))
-                    {
-                        depedency_relations+=this.name + "--" + cu_list_string.get(j) + "\n";
-                    }
-                }
-                //System.out.println("this are memeber variables of class "+ member_variable.get(i));
             }
         }
 
         if (method_ext != null) {
             for (int i = 0; i < method_ext.size(); i++) {
-               // System.out.println("this is methods of class" + method_ext.get(i));
                 final_string += method_ext.get(i) + "\n";
             }
         }
-        final_string += "}";
-        //System.out.println("this is for class "+final_string);
+        final_string += "}\n";
+        if(dep_rel!=null)
+        {
+            final_string += dep_rel;
+        }
         return final_string;
     }
-//The attributes obtained from the get_member_methods are in the form of FieldDeclaration Type. To convert attributes to string
-    //and get only public and private attributes, below method is used. Takes,FieldDeclaration type as a paramter.
+
     public String to_string_attribute(FieldDeclaration a) {
         String final_att = "";
        for(Modifier e:a.getModifiers())
@@ -180,8 +147,11 @@ public String get_constructor_string(BodyDeclaration b)
                        .toString();
            }
        }
+
         return final_att;
 
     }
+
+
 }
 

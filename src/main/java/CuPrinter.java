@@ -13,10 +13,10 @@ public class CuPrinter {
     public static void main(String[] args) throws Exception {
         //Get the path of the file
         ParseFiles parse_file = new ParseFiles(args[0], args[1]);
+        //ParseFiles parse_file = new ParseFiles("/Users/bhaktishah/Desktop/uml-parser-test-4","uml-parser-test-2.png");
+        //System.out.println(args[0]+ "this" +args[1]);
         parse_file.run();
-        //System.out.println("File path : " + final_path);
-        //pass the path of the file to parser to parse the folder and extract seperate files
+
 
     }
-    
 }

@@ -19,11 +19,10 @@
  * GNU Lesser General Public License for more details.
  */
 
-import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.BodyDeclaration;
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,46 +33,41 @@ import java.util.List;
 public class Interface_type {
     private  String name;
     private String final_string = "";
-//    private NodeList<ClassOrInterfaceType> parent;
-//    private NodeList<ClassOrInterfaceType> implemented_type;
     private List<FieldDeclaration> attributes;
     private List<MethodDeclaration> methods;
     private ArrayList<String> method_ext;
     private ArrayList<String> member_variable;
-    private String cu_list_string;
 
 
-    public Interface_type(ClassOrInterfaceDeclaration c,String cu_list) {
+
+    public Interface_type(ClassOrInterfaceDeclaration c) {
         name = c.getNameAsString();
-//        parent = c.getExtendedTypes();
-//        implemented_type = c.getImplementedTypes();
         method_ext = new ArrayList<String>();
         methods = c.getMethods();
         attributes=c.getFields();
         member_variable=new ArrayList<String >();
-        cu_list_string=cu_list;
         for (MethodDeclaration m : methods) {
 
-            Method_extractor m_e = new Method_extractor(m,cu_list_string);
+            Method_extractor m_e = new Method_extractor(m,name);
             method_ext.add(m_e.get_string());
         }
     }
+
     public String get_name()
     {
         return "interface "+name;
     }
- 
+
     public String get_method_members()
     {
         final_string +="interface "+name+"{\n";
 
-        if(member_variable!=null)
-        {
-            for(int i=0;i<member_variable.size();i++)
-            {
-                final_string +=member_variable.get(i) + "\n";
+        if (attributes != null) {
+            for (int i = 0; i < attributes.size(); i++) {
+                final_string += to_string_attribute(attributes.get(i)) + "\n";
             }
         }
+
 
         if(method_ext!=null) {
             for (int i = 0; i < method_ext.size(); i++) {
@@ -82,35 +76,21 @@ public class Interface_type {
             }
         }
         final_string+="}";
-        //System.out.println(final_string);
         return final_string;
     }
-    public String convert_to_att_form(BodyDeclaration<?> a)
-    {
-        a.removeComment();
-        String attribute = a.toString();
-        attribute = attribute.replace(";","");
-
-        String final_att="";
-        if(attribute.contains("private "))
+    public String to_string_attribute(FieldDeclaration a) {
+        String final_att = "";
+        for(Modifier e:a.getModifiers())
         {
-            String result[] = attribute.split("\\s+");
-            final_att += "- ";
-            int index=result.toString().indexOf("private");
-            for(int i=index+1;i<result.length;i++)
+            if(e.toString()=="PRIVATE")
             {
-                final_att += result[i]+" ";
+                final_att += "- " +a.getVariables().get(0).getNameAsString() +": "+a.getVariables().get(0).getType()
+                        .toString();
             }
-
-        }
-        else if(attribute.contains("public"))
-        {
-            String result[] = attribute.split("\\s+");
-            final_att +="+ ";
-            int index=result.toString().indexOf("private");
-            for(int i=index+1;i<result.length;i++)
+            else if(e.toString()=="PUBLIC")
             {
-                final_att += result[i];
+                final_att += "+ " +a.getVariables().get(0).getNameAsString() +": "+a.getVariables().get(0).getType()
+                        .toString();
             }
         }
         return final_att;

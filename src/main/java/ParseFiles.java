@@ -45,18 +45,19 @@ public class ParseFiles {
     private String relations_class_interface;
     private String methods_members;
     private String parser_file;
-    private String dependency_relation="";
-
+    private ArrayList<TypeDeclaration> list_class_interface;
 
 
     ParseFiles(String in_path, String out_path) {
         input_file_path = in_path;
         output_file = out_path;
         classes = new ArrayList<String>();
+        list_class_interface = new ArrayList<TypeDeclaration>();
         name_class_interface = "";
         relations_class_interface = "";
         methods_members = "";
         parser_file = "";
+
     }
 
 
@@ -69,9 +70,10 @@ public class ParseFiles {
             if (input_files[i].isFile() && input_files[i].getName().endsWith(".java")) {
                 FileInputStream in = new FileInputStream(input_files[i]);
                 try {
+
                     CompilationUnit cu;
                     cu = JavaParser.parse(in);
-                    // System.out.println(cu.toString());
+                    //System.out.println(cu.toString());
                     cu_arr_list.add(cu);
                 } finally {
                     in.close();
@@ -79,7 +81,6 @@ public class ParseFiles {
                 }
             }
         }
-        //System.out.println(cu_arr_list);
         return cu_arr_list;
 
     }
@@ -89,11 +90,11 @@ public class ParseFiles {
         try {
             cu_list = get_cu_list();
             ArrayList<String> name_of_class_interface = get_names(cu_list);
-            ArrayList<String> dp= new ArrayList<String>();
-           //System.out.println("this is the list of file"+list_of_class);
+            ArrayList<String> dp = new ArrayList<String>();
             for (CompilationUnit c : cu_list) {
 
                 TypeDeclaration t = c.getType(0);
+                list_class_interface.add(t);
                 if (t instanceof ClassOrInterfaceDeclaration) {
                     ClassOrInterfaceDeclaration classDec = (ClassOrInterfaceDeclaration) t;
                     if (classDec.isInterface()) {
@@ -102,42 +103,41 @@ public class ParseFiles {
                         methods_members += int_t.get_method_members() + "\n";
 
                     } else {
-                        Class_type class_t = new Class_type(classDec,name_of_class_interface);
+                        Class_type class_t = new Class_type(classDec, name_of_class_interface);
                         name_class_interface += class_t.get_name() + "\n";
                         relations_class_interface += class_t.get_relations() + "\n";
                         methods_members += class_t.get_method_members() + "\n";
-                        dp.add(class_t.get_dependency_relations());
 
 
                     }
                 }
             }
-            dependency_relation += remove_duplicate_dependecy(dp);
+            Dependency_Association d_a = new Dependency_Association(list_class_interface);
+            d_a.get_dependency_relations();
 
-            parser_file += "@startuml\n" + name_class_interface + relations_class_interface +dependency_relation+ methods_members +
+            //System.out.println(name_of_class_interface);
+            parser_file += "@startuml\n" + d_a.dependency_relations() + name_class_interface +
+                    relations_class_interface +
+                    methods_members +
                     "@enduml";
-            //System.out.println(parser_file);
+            System.out.println(parser_file);
         } finally {
             createUML();
         }
 
     }
-    public ArrayList<String> get_names(ArrayList<CompilationUnit> cu)
-    {
-        ArrayList<String>names = new ArrayList<String>();
-        for(CompilationUnit c : cu)
-        {
+
+    public ArrayList<String> get_names(ArrayList<CompilationUnit> cu) {
+        ArrayList<String> names = new ArrayList<String>();
+        for (CompilationUnit c : cu) {
             names.add(c.getType(0).getName().toString());
+            //System.out.println(c.getType(0).getName().toString());
         }
 
 
-        return  names;
+        return names;
     }
-    public String remove_duplicate_dependecy(ArrayList<String>dp)
-    {
-        String dependecy="";
-        return dependecy;
-    }
+
 
     public void createUML() throws Exception {
 
